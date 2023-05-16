@@ -1,24 +1,16 @@
 from typing import Union
-
 import unicodedata as unicodedata
-
 from fastapi import FastAPI
-
-from pandas import read_csv
-
 import pandas as pd
-
+from pandas import read_csv
 from sklearn.feature_extraction.text import TfidfVectorizer
-
 from sklearn.metrics.pairwise import linear_kernel
-
-
 
 app = FastAPI()
 
-df = read_csv('df_arreglado.csv')
+df = read_csv('df_transformado.csv')
 
-ml=df.sample(n=5000, random_state=42) 
+ml=df.sample(n=2000, random_state=42) 
 
 tfidf= TfidfVectorizer(stop_words = 'english') 
 ml['overview'] = ml['overview'].fillna('') 
@@ -29,7 +21,8 @@ ml = ml.reset_index(drop=True)
 indices = pd.Series(ml.index, index=ml['title'])
 
 @app.get('/peliculas_mes/{mes}')
-months_translated= {
+def peliculas_mes(mes):
+    months_translated= {
     'enero': 'January',
     'febrero': 'February',
     'marzo': 'March',
@@ -48,7 +41,8 @@ months_translated= {
     return {'mes':mes, 'cantidad':respuesta}
 
 @app.get('/peliculas_dia/{dia}')
-day_translated= {
+def peliculas_dia(dia):
+    day_translated= {
     'lunes': 'Monday',
     'martes': 'Tuesday',
     'miercoles': 'Wednesday',
@@ -87,7 +81,7 @@ def productoras(productora):
     prod=df[['production_companies','revenue']].dropna()
     prod['production_companies']=prod['production_companies'].map(str.lower)
     prod=prod[prod.production_companies.str.contains(productora.lower(), regex=False)]
-    cantidad=prod.shape[0]
+    cantidad=prod.sum()
     ganancia_total=prod['revenue'].sum()
     return {'productora':productora, 'ganancia_total':ganancia_total, 'cantidad':cantidad}
 
@@ -102,10 +96,10 @@ def retorno(pelicula):
 
 # ML
 @app.get('/recomendacion/{titulo}')
-def recomendacion(titulo, cosine_sim=cosine_sim):
+def recomendacion(titulo):
     idx = indices[titulo]
     sim_scores = list(enumerate(cosine_sim[idx]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    sim_scores = sorted(sim_scores, key= lambda x: x[1], reverse=True)
     sim_scores = sim_scores[1:6]
     movie_indices = [i[0] for i in sim_scores]
     recommendations=list(ml['title'].iloc[movie_indices].str.title())
