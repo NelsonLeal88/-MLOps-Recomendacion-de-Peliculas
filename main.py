@@ -73,7 +73,7 @@ def peliculas_pais(pais):
         pais = unicodedata.normalize('NFKD', pais).encode('ascii', 'ignore').decode('utf-8','ignore')
         cantidad = m1['title'][m1['production_countries'].str.contains(pais)==True]
         cantidad = df['production_countries'].apply(lambda x: str(x).lower()).map(str.lower).apply(lambda x: pais in x)
-        respuesta = cantidad.shape[0]
+        respuesta = cantidad.sum()
     return {'pais': pais, 'cantidad': respuesta}
 
 @app.get('/productoras/{productora}')
@@ -94,7 +94,6 @@ def retorno(pelicula):
     anio = pelicula_df['release_year'].iloc[0].item()
     return {'pelicula': pelicula, 'inversion': inversion, 'ganancia': ganancia, 'retorno': retorno, 'anio': anio}
 
-# ML
 @app.get('/recomendacion/{titulo}')
 def recomendacion(titulo):
     idx = indices[titulo]
