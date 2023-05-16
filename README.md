@@ -31,10 +31,14 @@ DEPLOYMENT
 Para esta fase se propuso usar RENDER
 
 EDA - ANALISIS EXPLORATORIO DE DATOS
+
 Codigo Consulta API Aqui dejamos el codigo de las consultas desarrolladas y probadas:
+
 https://github.com/NelsonLeal88/Proyecto1/blob/main/EDA.ipynb
 
 SISTEMA DE RECOMENDACION - MODELO MACHINE LEARNING
 Una vez realizado y verificado el EDA se entrena el modelo de machine learning para armar el sistema de recomendacion de peliculas para el usuario
+
 Codigo modelo machine learning - sistema de recomendacion Aqui dejamos el codigo del modelo entrenado de machine learning:
+
 https://github.com/NelsonLeal88/Proyecto1/blob/main/ML.ipynb
